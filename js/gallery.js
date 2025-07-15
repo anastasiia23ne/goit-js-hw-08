@@ -71,13 +71,13 @@ gallery.insertAdjacentHTML("beforeend", createMarkup(images));
 gallery.addEventListener("click", handleClick);
 
 function createMarkup(arr) {
-  return arr.map((item) => `<li class="gallery-item">
-  <a class="gallery-link" href="${item.original}">
+  return arr.map(({original, preview, description}) => `<li class="gallery-item">
+  <a class="gallery-link" href="${original}">
     <img
       class="gallery-image"
-      src="${item.preview}"
-      data-source="${item.original}"
-      alt="${item.description}"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
     />
   </a>
 </li>`).join("")
@@ -90,7 +90,7 @@ function handleClick(event) {
 }
 
 const instance = basicLightbox.create(`
-  <img src="${item.original}" alt="item.description" width="1112" height="640">
+  <img src="${original}" alt="${description}" width="1112" height="640">
 `)
 
 instance.show()
