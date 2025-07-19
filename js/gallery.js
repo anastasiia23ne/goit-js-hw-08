@@ -65,33 +65,62 @@ const images = [
 ];
   
 
+
+
 const gallery = document.querySelector('.gallery');
 
-gallery.insertAdjacentHTML("beforeend", createMarkup(images));
-gallery.addEventListener("click", handleClick);
+    gallery.insertAdjacentHTML("beforeend", createMarkup(images));
+    gallery.addEventListener("click", handleClick);
 
-function createMarkup(arr) {
-  return arr.map(({original, preview, description}) => `<li class="gallery-item">
-  <a class="gallery-link" href="${original}">
-    <img
-      class="gallery-image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-    />
-  </a>
-</li>`).join("")
-}
+    function createMarkup(arr) {
+      return arr.map(({ original, preview, description }) => `
+        <li class="gallery-item">
+          <a class="gallery-link" href="${original}";">
+            <img
+              class="gallery-image"
+              src="${preview}"
+              data-source="${original}"
+              alt="${description}"
+            />
+          </a>
+        </li>
+      `).join("");
+    }
 
-function handleClick(event) {
-  if (event.target.classList.contains("gallery-image")) {
-    console.log(event.target.dataset.source)
-  }
-}
+    function handleClick(event) {
+      if (!event.target.classList.contains("gallery-image")) return;
+      event.preventDefault();
 
-const instance = basicLightbox.create(`
-  <img src="${original}" alt="${description}" width="1112" height="640">
-`)
+      const source = event.target.dataset.source;
+      const alt = event.target.alt;
 
-instance.show()
+      console.log("Image source:", source);
+      console.log("Image alt:", alt);
+
+      openModal(source, alt);
+    }
+
+    function openModal(src, alt) {
+      const instance = basicLightbox.create(
+        `<img src="${src}" alt="${alt}" width="1112" height="640">`,
+        {
+          className: 'modal',
+          onShow: () => {
+            document.addEventListener('keydown', onEscapePress);
+          },
+          onClose: () => {
+            document.removeEventListener('keydown', onEscapePress);
+          },
+        }
+      );
+
+      function onEscapePress(event) {
+        if (event.code === 'Escape') {
+          instance.close();
+        }
+      }
+
+      instance.show();
+    }
+
 
